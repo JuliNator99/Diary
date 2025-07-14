@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_placeholder">Write anything or nothing</string>
+    <string name="note_info">A place for your thoughts</string>
+
+    <string name="save">Save</string>
+</resources>
