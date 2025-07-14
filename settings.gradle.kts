@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Diary"
 include(":app")
 include(":core:theme")
+include(":core:model")
