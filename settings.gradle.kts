@@ -23,5 +23,7 @@ rootProject.name = "Diary"
 include(":app")
 include(":core:theme")
 include(":core:model")
+include(":data:database")
+include(":data:repository")
 include(":feature:journal")
 include(":core:util")
