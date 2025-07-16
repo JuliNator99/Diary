@@ -9,5 +9,5 @@ interface JournalEntryData {
     var timeMillis: Long
     
     var createdMillis: Long
-    val uid: String
+    var uid: String
 }

@@ -13,5 +13,5 @@ data class RoomJournalEntry @OptIn(ExperimentalTime::class) constructor(
     override var timeMillis: Long = Clock.System.now().toEpochMilliseconds(),
     
     override var createdMillis: Long = Clock.System.now().toEpochMilliseconds(),
-    @PrimaryKey override val uid: String,
+    @PrimaryKey override var uid: String,
 ) : JournalEntryData
