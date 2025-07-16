@@ -53,7 +53,7 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 @Composable
 internal fun JournalEditor(
-    state: JournalEditorState,
+    state: JournalEditorState.Editor,
     onDiscard: () -> Unit,
     onSave: () -> Unit,
     change: (JournalEntry) -> Unit,
@@ -249,7 +249,7 @@ private fun JournalEditorPreview() {
         }
         
         JournalEditor(
-            state = JournalEditorState(
+            state = JournalEditorState.Editor(
                 entry = journal,
                 allMoods = moods
             ),
