@@ -17,8 +17,8 @@ internal val navArgRegister = NavigationArgumentRegister<JournalEntry>()
 const val ROUTE_JOURNAL_EDITOR = "editor/journal"
 private const val ARG_JOURNAL_EDITOR = "jid"
 
-fun NavController.navigateToNoteEditor(storedJournalUid: String) = navigate(route = "$ROUTE_JOURNAL_EDITOR/$storedJournalUid")
-fun NavController.navigateToNoteEditor(default: JournalEntry) {
+fun NavController.navigateToJournalEditor(storedJournalUid: String) = navigate(route = "$ROUTE_JOURNAL_EDITOR/$storedJournalUid")
+fun NavController.navigateToJournalEditor(default: JournalEntry) {
     val id = navArgRegister.store(default)
     navigate(route = "$ROUTE_JOURNAL_EDITOR/$id")
 }
@@ -27,7 +27,7 @@ fun NavGraphBuilder.journalEditor(
     repository: JournalRepository,
     navBack: () -> Unit,
 ) = composable(
-    route = ROUTE_JOURNAL_EDITOR,
+    route = "$ROUTE_JOURNAL_EDITOR/{$ARG_JOURNAL_EDITOR}",
     arguments = listOf(
         navArgument(name = ARG_JOURNAL_EDITOR) { type = NavType.StringType },
     )
