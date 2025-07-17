@@ -1,9 +1,11 @@
 package de.julianschwers.diary.data.repository
 
 import de.julianschwers.diary.core.model.JournalEntry
+import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.data.database.Database
 import de.julianschwers.diary.data.database.copyImpl
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 class JournalRepository(private val database: Database) {
@@ -12,4 +14,16 @@ class JournalRepository(private val database: Database) {
     
     fun upsert(journal: JournalEntry) = database.journalEntryDao.upsert(journal = journal.asData(database.journalEntryDao.getJournal(uid = journal.uid).copyImpl()))
     fun delete(journal: JournalEntry) = database.journalEntryDao.delete(journal = journal.asData(database.journalEntryDao.getJournal(uid = journal.uid).copyImpl()))
+    
+    
+    private val defaultMoods = listOf(
+        Mood(emoji = "):<", uid = "default-mood-0"),
+        Mood(emoji = "D:", uid = "default-mood-2"),
+        Mood(emoji = "):", uid = "default-mood-4"),
+        Mood(emoji = ":)", uid = "default-mood-6"),
+        Mood(emoji = ":D", uid = "default-mood-8"),
+    )
+    
+    fun getMood(uid: String): Mood = defaultMoods.find { it.uid == uid }!!
+    fun queryMoods(): Flow<List<Mood>> = MutableStateFlow(defaultMoods)
 }
