@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":core:theme"))
     implementation(project(":core:model"))
     implementation(project(":core:util"))
+    implementation(project(":data:repository"))
     
     implementation(libs.androidx.icons)
     implementation(libs.androidx.material3.navigation)
