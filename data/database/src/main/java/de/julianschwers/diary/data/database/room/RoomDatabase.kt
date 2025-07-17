@@ -16,11 +16,8 @@ fun RoomDatabase(context: Context): de.julianschwers.diary.data.database.room.Ro
         RoomJournalEntry::class
     ],
     exportSchema = true,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3),
-    ],
-    version = 3
+    autoMigrations = [],
+    version = 1
 )
 abstract class RoomDatabase : RoomDatabase(), de.julianschwers.diary.data.database.Database {
     abstract override val journalEntryDao: RoomJournalEntryDao

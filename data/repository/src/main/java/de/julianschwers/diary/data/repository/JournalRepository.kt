@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 class JournalRepository(private val database: Database) {
-    fun getJournal(uid: String): JournalEntry = database.journalEntryDao.getJournal(uid = uid).asModel()
+    suspend fun getJournal(uid: String): JournalEntry = database.journalEntryDao.getJournal(uid = uid).asModel()
     fun queryJournals(): Flow<List<JournalEntry>> = database.journalEntryDao.queryJournals().map { flow -> flow.map { it.asModel() } }
     
-    fun upsert(journal: JournalEntry) = database.journalEntryDao.upsert(journal = journal.asData(database.journalEntryDao.getJournal(uid = journal.uid).copyImpl()))
-    fun delete(journal: JournalEntry) = database.journalEntryDao.delete(journal = journal.asData(database.journalEntryDao.getJournal(uid = journal.uid).copyImpl()))
+    suspend fun upsert(journal: JournalEntry) = database.journalEntryDao.upsert(journal = journal.asData(database.journalEntryDao.getJournal(uid = journal.uid).copyImpl()))
+    suspend fun delete(journal: JournalEntry) = database.journalEntryDao.delete(journal = journal.asData(database.journalEntryDao.getJournal(uid = journal.uid).copyImpl()))
     
     
     private val defaultMoods = listOf(
@@ -24,6 +24,6 @@ class JournalRepository(private val database: Database) {
         Mood(emoji = ":D", uid = "default-mood-8"),
     )
     
-    fun getMood(uid: String): Mood = defaultMoods.find { it.uid == uid }!!
+    suspend fun getMood(uid: String): Mood = defaultMoods.find { it.uid == uid }!!
     fun queryMoods(): Flow<List<Mood>> = MutableStateFlow(defaultMoods)
 }
