@@ -7,9 +7,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import de.julianschwers.diary.data.database.JournalEntryDao
 
-fun RoomDatabase(context: Context): RoomDatabase =
+fun RoomDatabase(context: Context): de.julianschwers.diary.data.database.room.RoomDatabase =
     Room
-        .databaseBuilder(context, RoomDatabase::class.java, "MainRoom")
+        .databaseBuilder(context, de.julianschwers.diary.data.database.room.RoomDatabase::class.java, "MainRoom")
         .build()
 
 @Database(
