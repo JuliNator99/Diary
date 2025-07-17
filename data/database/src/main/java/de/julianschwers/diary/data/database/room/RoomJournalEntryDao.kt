@@ -16,7 +16,7 @@ interface RoomJournalEntryDao : JournalEntryDao {
     WHERE uid = :uid
 """
     )
-    override suspend fun getJournal(uid: String): RoomJournalEntry
+    override suspend fun getJournal(uid: String): RoomJournalEntry?
     
     @Query(
         """
@@ -33,12 +33,12 @@ interface RoomJournalEntryDao : JournalEntryDao {
     suspend fun internalDelete(journal: RoomJournalEntry)
     
     override suspend fun upsert(journal: JournalEntryData) {
-        val stored = getJournal(uid = journal.uid).copy()
+        val stored = getJournal(uid = journal.uid)?.copy() ?: RoomJournalEntry() // TODO this does not update anything
         internalUpsert(stored)
     }
     
     override suspend fun delete(journal: JournalEntryData) {
-        val stored = getJournal(uid = journal.uid).copy()
+        val stored = getJournal(uid = journal.uid)?.copy() ?: return
         internalDelete(stored)
     }
 }
