@@ -5,7 +5,6 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import de.julianschwers.diary.data.database.JournalEntryDao
 
 fun RoomDatabase(context: Context): de.julianschwers.diary.data.database.room.RoomDatabase =
     Room
@@ -24,5 +23,5 @@ fun RoomDatabase(context: Context): de.julianschwers.diary.data.database.room.Ro
     version = 3
 )
 abstract class RoomDatabase : RoomDatabase(), de.julianschwers.diary.data.database.Database {
-    abstract override val journalEntryDao: JournalEntryDao
+    abstract override val journalEntryDao: RoomJournalEntryDao
 }
