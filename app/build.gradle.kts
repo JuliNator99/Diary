@@ -37,6 +37,14 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:theme"))
+    implementation(project(":core:model"))
+    implementation(project(":core:util"))
+    implementation(project(":data:database"))
+    implementation(project(":data:repository"))
+    implementation(project(":feature:journal"))
+    
+    
     implementation(libs.androidx.icons)
     implementation(libs.androidx.material3.navigation)
     implementation(libs.androidx.material3.adaptive.navigation.suite)
