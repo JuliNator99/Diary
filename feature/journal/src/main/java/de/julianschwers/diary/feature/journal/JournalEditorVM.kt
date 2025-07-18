@@ -3,7 +3,6 @@ package de.julianschwers.diary.feature.journal
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.navArgument
 import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.data.repository.JournalRepository
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +44,7 @@ class JournalEditorVM(
         
         viewModelScope.launch(Dispatchers.IO) {
             repository.upsert(journalEntry)
-            callback()
+            viewModelScope.launch(Dispatchers.Main) { callback() }
         }
     }
 }
