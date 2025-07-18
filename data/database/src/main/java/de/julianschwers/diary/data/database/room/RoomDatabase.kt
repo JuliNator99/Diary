@@ -5,11 +5,10 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import de.julianschwers.diary.data.database.JournalEntryDao
 
-fun RoomDatabase(context: Context): RoomDatabase =
+fun RoomDatabase(context: Context): de.julianschwers.diary.data.database.room.RoomDatabase =
     Room
-        .databaseBuilder(context, RoomDatabase::class.java, "MainRoom")
+        .databaseBuilder(context, de.julianschwers.diary.data.database.room.RoomDatabase::class.java, "MainRoom")
         .build()
 
 @Database(
@@ -17,12 +16,9 @@ fun RoomDatabase(context: Context): RoomDatabase =
         RoomJournalEntry::class
     ],
     exportSchema = true,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3),
-    ],
-    version = 3
+    autoMigrations = [],
+    version = 1
 )
 abstract class RoomDatabase : RoomDatabase(), de.julianschwers.diary.data.database.Database {
-    abstract override val journalEntryDao: JournalEntryDao
+    abstract override val journalEntryDao: RoomJournalEntryDao
 }

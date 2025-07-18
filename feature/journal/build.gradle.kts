@@ -1,21 +1,18 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
 }
 
 android {
-    namespace = "de.julianschwers.diary"
+    namespace = "de.julianschwers.diary.feature.journal"
     compileSdk = 36
     
     defaultConfig {
-        applicationId = "de.julianschwers.diary"
         minSdk = 31
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
         
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
     
     buildTypes {
@@ -40,14 +37,10 @@ dependencies {
     implementation(project(":core:theme"))
     implementation(project(":core:model"))
     implementation(project(":core:util"))
-    implementation(project(":data:database"))
     implementation(project(":data:repository"))
-    implementation(project(":feature:journal"))
-    
     
     implementation(libs.androidx.icons)
     implementation(libs.androidx.material3.navigation)
-    implementation(libs.androidx.material3.adaptive.navigation.suite)
     
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -58,7 +51,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
