@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
@@ -71,12 +72,15 @@ internal fun JournalEditor(
     onSave: () -> Unit,
     change: (JournalEntry) -> Unit,
 ) {
-    Scaffold(topBar = {
-        TopAppBar(
-            onDiscard = onDiscard,
-            onSave = onSave,
-        )
-    }) { innerPadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                onDiscard = onDiscard,
+                onSave = onSave,
+            )
+        },
+        modifier = Modifier.imePadding()
+    ) { innerPadding ->
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.large),
             contentPadding = PaddingValues(MaterialTheme.padding.large),
