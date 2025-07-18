@@ -18,6 +18,8 @@ import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,13 +29,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -46,6 +52,13 @@ import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.padding
 import de.julianschwers.diary.core.util.getDisplayName
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atDate
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.atTime
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import java.time.format.FormatStyle
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -70,7 +83,10 @@ internal fun JournalEditor(
             modifier = Modifier.padding(innerPadding)
         ) {
             item {
-                DateTimeSelector(time = state.entry.time)
+                DateTimeSelector(
+                    time = state.entry.time,
+                    onSelect = { change(state.entry.copy(time = it)) },
+                )
             }
             item {
                 MoodSelector(
@@ -126,18 +142,64 @@ private fun TextField(
     }
 }
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun DateTimeSelector(
     time: Instant,
     modifier: Modifier = Modifier,
+    onSelect: (Instant) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        TextButton(onClick = {}) {
+        var showDatePicker by rememberSaveable { mutableStateOf(false) }
+        var showTimePicker by rememberSaveable { mutableStateOf(false) }
+        
+        if (showDatePicker) {
+            val dateTime = remember { time.toLocalDateTime(TimeZone.currentSystemDefault()) }
+            val state = rememberDatePickerState(initialSelectedDateMillis = dateTime.date.atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds())
+            
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDatePicker = false
+                        
+                        val selectedInstant = Instant.fromEpochMilliseconds(state.selectedDateMillis!!)
+                        val newDateTime = selectedInstant.toLocalDateTime(TimeZone.UTC).date.atTime(dateTime.time)
+                        
+                        onSelect(newDateTime.toInstant(TimeZone.currentSystemDefault()))
+                    }) { Text(text = stringResource(R.string.ok)) }
+                }) {
+                DatePicker(state = state)
+            }
+        }
+        if (showTimePicker) {
+            val dateTime = remember { time.toLocalDateTime(TimeZone.currentSystemDefault()) }
+            val state = rememberTimePickerState(initialHour = dateTime.time.hour, initialMinute = dateTime.time.minute)
+            
+            DatePickerDialog(
+                onDismissRequest = { showTimePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showTimePicker = false
+                        
+                        val selectedTime = LocalTime(hour = state.hour, minute = state.minute)
+                        val newDateTime = selectedTime.atDate(dateTime.date)
+                        
+                        onSelect(newDateTime.toInstant(TimeZone.currentSystemDefault()))
+                    }) { Text(text = stringResource(R.string.ok)) }
+                }) {
+                TimePicker(
+                    state = state,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+        
+        TextButton(onClick = { showDatePicker = true }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)
@@ -146,7 +208,7 @@ private fun DateTimeSelector(
                 Text(text = time.getDisplayName(dateStyle = FormatStyle.FULL))
             }
         }
-        TextButton(onClick = {}) {
+        TextButton(onClick = { showTimePicker = true }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)
