@@ -199,12 +199,18 @@ private fun InfoBar(
             ) {
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.edit)) },
-                    onClick = onEdit,
+                    onClick = {
+                        onEdit()
+                        showDropdown = false
+                    },
                     leadingIcon = { Icon(imageVector = Icons.Outlined.Edit, contentDescription = null) },
                 )
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.delete)) },
-                    onClick = onDelete,
+                    onClick = {
+                        onDelete()
+                        showDropdown = false
+                    },
                     leadingIcon = { Icon(imageVector = Icons.Outlined.Delete, contentDescription = null) },
                 )
             }
