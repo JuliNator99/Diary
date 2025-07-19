@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core:util"))
     implementation(project(":data:database"))
     implementation(project(":data:repository"))
+    implementation(project(":feature:timeline"))
     implementation(project(":feature:journal"))
     
     
