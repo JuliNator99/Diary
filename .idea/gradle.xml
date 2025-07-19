@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/data/repository" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/journal" />
+            <option value="$PROJECT_DIR$/feature/timeline" />
           </set>
         </option>
       </GradleProjectSettings>
