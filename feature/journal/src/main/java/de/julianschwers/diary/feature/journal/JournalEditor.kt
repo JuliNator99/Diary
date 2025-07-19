@@ -94,9 +94,9 @@ internal fun JournalEditor(
             }
             item {
                 MoodSelector(
-                    selected = state.allMoods.find { it.uid == state.entry.moodUid },
+                    selected = state.entry.mood,
                     allMoods = state.allMoods,
-                    onSelect = { change(state.entry.copy(moodUid = it?.uid)) },
+                    onSelect = { change(state.entry.copy(mood = it)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
