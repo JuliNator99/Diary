@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "de.julianschwers.diary.feature.journal"
+    namespace = "de.julianschwers.diary.feature.timeline"
     compileSdk = 36
     
     defaultConfig {

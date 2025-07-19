@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import de.julianschwers.diary.data.database.JournalEntryDao
 import de.julianschwers.diary.data.database.JournalEntryData
+import de.julianschwers.diary.data.database.copy
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -33,8 +34,10 @@ interface RoomJournalEntryDao : JournalEntryDao {
     suspend fun internalDelete(journal: RoomJournalEntry)
     
     override suspend fun upsert(journal: JournalEntryData) {
-        val stored = getJournal(uid = journal.uid)?.copy() ?: RoomJournalEntry() // TODO this does not update anything
-        internalUpsert(stored)
+        val stored = getJournal(uid = journal.uid)?.copy()
+        val entity = if (stored != null) journal.copy(stored) else journal.copy(RoomJournalEntry())
+        
+        internalUpsert(entity)
     }
     
     override suspend fun delete(journal: JournalEntryData) {
