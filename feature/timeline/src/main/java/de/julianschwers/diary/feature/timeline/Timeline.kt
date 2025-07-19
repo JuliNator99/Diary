@@ -27,7 +27,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 
 @Composable
-private fun TimelineScreen(
+fun TimelineScreen(
     state: TimelineState,
     modifier: Modifier = Modifier,
     onCreateNew: () -> Unit,
