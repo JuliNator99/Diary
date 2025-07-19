@@ -30,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
+import de.julianschwers.diary.core.theme.card
+import de.julianschwers.diary.core.theme.elevation
 import de.julianschwers.diary.core.theme.padding
 import de.julianschwers.diary.core.util.getDisplayName
 import java.time.format.FormatStyle
@@ -46,8 +48,9 @@ internal fun JournalDay(
 ) {
     val sortedEntries = journals.sortedByDescending { it.time }
     Surface(
-        color = MaterialTheme.colorScheme.surface,
-        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = MaterialTheme.shapes.large,
+        shadowElevation = MaterialTheme.elevation.card,
         modifier = modifier
     ) {
         Column {
