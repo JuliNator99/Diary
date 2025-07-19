@@ -32,3 +32,14 @@ data class JournalEntryDataImpl @OptIn(ExperimentalTime::class, ExperimentalUuid
     override var createdMillis: Long = Clock.System.now().toEpochMilliseconds(),
     override var uid: String = Uuid.random().toString(),
 ) : JournalEntryData
+
+
+fun JournalEntryData.copyAsImpl(): JournalEntryDataImpl = copy(JournalEntryDataImpl())
+fun <T : JournalEntryData> JournalEntryData.copy(destination: T): T = destination.apply {
+    this@apply.text = this@copy.text
+    this@apply.moodUid = this@copy.moodUid
+    this@apply.timeMillis = this@copy.timeMillis
+    
+    this@apply.createdMillis = this@copy.createdMillis
+    this@apply.uid = this@copy.uid
+}
