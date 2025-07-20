@@ -16,6 +16,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -110,11 +112,13 @@ private fun JournalItem(
             Sidebar(
                 mood = journalEntry.mood,
                 line = addConnectingLine,
+                color = journalEntry.mood?.let { colorResource(LocalMoods.current.getColor(it)) } ?: LocalContentColor.current,
             )
             MainInfo(
                 mood = journalEntry.mood?.let { stringResource(LocalMoods.current.getName(it)) } ?: "",
                 text = journalEntry.text,
                 time = journalEntry.time,
+                color = journalEntry.mood?.let { colorResource(LocalMoods.current.getColor(it)) } ?: LocalContentColor.current,
                 onDelete = onDelete,
                 onEdit = onEdit
             )
@@ -129,6 +133,7 @@ private fun MainInfo(
     mood: String,
     text: String,
     time: Instant,
+    color: Color,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
     onEdit: () -> Unit,
@@ -140,6 +145,7 @@ private fun MainInfo(
         InfoBar(
             mood = mood,
             time = time,
+            color=color,
             onDelete = onDelete,
             onEdit = onEdit
         )
@@ -155,6 +161,7 @@ private fun MainInfo(
 private fun Sidebar(
     mood: Mood?,
     line: Boolean,
+    color: Color,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -164,6 +171,7 @@ private fun Sidebar(
         Text(
             text = if (mood != null) LocalMoods.current.getEmoji(mood) else "",
             style = MaterialTheme.typography.titleLarge,
+            color = color,
             modifier = Modifier.minimumInteractiveComponentSize()
         )
         if (line) {
@@ -181,17 +189,21 @@ private fun Sidebar(
 private fun InfoBar(
     mood: String,
     time: Instant,
+    color: Color,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
     onEdit: () -> Unit,
 ) {
     var showDropdown by remember { mutableStateOf(false) }
     
-    Row(verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)
+    ) {
         Text(
             text = mood,
             style = MaterialTheme.typography.titleLarge,
+            color = color,
             modifier = Modifier
         )
         Text(
