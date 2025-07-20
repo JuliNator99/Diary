@@ -43,7 +43,7 @@ android {
 dependencies {
     implementation(project(":core:theme"))
     implementation(project(":core:model"))
-    implementation(project(":core:util"))
+    implementation(project(":core:common"))
     implementation(project(":data:database"))
     implementation(project(":data:repository"))
     implementation(project(":feature:timeline"))

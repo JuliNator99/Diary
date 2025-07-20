@@ -39,7 +39,7 @@ import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.card
 import de.julianschwers.diary.core.theme.elevation
 import de.julianschwers.diary.core.theme.padding
-import de.julianschwers.diary.core.util.getDisplayName
+import de.julianschwers.diary.core.common.getDisplayName
 import java.time.format.FormatStyle
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

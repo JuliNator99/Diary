@@ -51,7 +51,7 @@ import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.padding
-import de.julianschwers.diary.core.util.getDisplayName
+import de.julianschwers.diary.core.common.getDisplayName
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atDate

@@ -1,4 +1,4 @@
-package de.julianschwers.diary.core.util
+package de.julianschwers.diary.core.common
 
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
