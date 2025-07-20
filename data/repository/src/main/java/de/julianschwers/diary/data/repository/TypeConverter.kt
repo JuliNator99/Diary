@@ -1,13 +1,13 @@
 package de.julianschwers.diary.data.repository
 
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.model.Mood
+import de.julianschwers.diary.core.model.MoodData
 import de.julianschwers.diary.data.database.JournalEntryData
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-internal fun JournalEntryData.asModel(allMoods: List<Mood>): JournalEntry =
+internal fun JournalEntryData.asModel(allMoods: List<MoodData>): JournalEntry =
     JournalEntry(
         text = text ?: "",
         mood = allMoods.find { it.uid == this.moodUid },

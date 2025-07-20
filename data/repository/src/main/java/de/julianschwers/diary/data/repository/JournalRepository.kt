@@ -1,7 +1,7 @@
 package de.julianschwers.diary.data.repository
 
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.model.Mood
+import de.julianschwers.diary.core.model.MoodData
 import de.julianschwers.diary.data.database.Database
 import de.julianschwers.diary.data.database.JournalEntryDataImpl
 import de.julianschwers.diary.data.database.copyImpl
@@ -18,14 +18,14 @@ class JournalRepository(private val database: Database) {
     
     
     private val defaultMoods = listOf(
-        Mood(emoji = "):<", uid = "default-mood-0"),
-        Mood(emoji = "D:", uid = "default-mood-2"),
-        Mood(emoji = "):", uid = "default-mood-4"),
-        Mood(emoji = ":)", uid = "default-mood-6"),
-        Mood(emoji = ":D", uid = "default-mood-8"),
+        MoodData(emoji = "):<", uid = "default-mood-0"),
+        MoodData(emoji = "D:", uid = "default-mood-2"),
+        MoodData(emoji = "):", uid = "default-mood-4"),
+        MoodData(emoji = ":)", uid = "default-mood-6"),
+        MoodData(emoji = ":D", uid = "default-mood-8"),
     )
     
-    suspend fun getMood(uid: String): Mood = defaultMoods.find { it.uid == uid }!!
-    fun getMoods(): List<Mood> = defaultMoods
-    fun queryMoods(): Flow<List<Mood>> = MutableStateFlow(defaultMoods)
+    suspend fun getMood(uid: String): MoodData = defaultMoods.find { it.uid == uid }!!
+    fun getMoods(): List<MoodData> = defaultMoods
+    fun queryMoods(): Flow<List<MoodData>> = MutableStateFlow(defaultMoods)
 }

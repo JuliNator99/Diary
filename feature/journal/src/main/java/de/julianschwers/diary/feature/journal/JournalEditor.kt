@@ -49,7 +49,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.model.Mood
+import de.julianschwers.diary.core.model.MoodData
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.padding
 import de.julianschwers.diary.core.util.getDisplayName
@@ -226,10 +226,10 @@ private fun DateTimeSelector(
 
 @Composable
 private fun MoodSelector(
-    selected: Mood?,
-    allMoods: List<Mood>,
+    selected: MoodData?,
+    allMoods: List<MoodData>,
     modifier: Modifier = Modifier,
-    onSelect: (Mood?) -> Unit,
+    onSelect: (MoodData?) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -248,7 +248,7 @@ private fun MoodSelector(
 
 @Composable
 private fun SelectableMood(
-    mood: Mood,
+    mood: MoodData,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onToggleSelect: () -> Unit,
@@ -306,11 +306,11 @@ private fun JournalEditorPreview() {
         var journal by remember { mutableStateOf(JournalEntry()) }
         val moods = remember {
             mutableStateListOf(
-                Mood(emoji = "):<"),
-                Mood(emoji = "D:"),
-                Mood(emoji = "):"),
-                Mood(emoji = ":)"),
-                Mood(emoji = ":D"),
+                MoodData(emoji = "):<"),
+                MoodData(emoji = "D:"),
+                MoodData(emoji = "):"),
+                MoodData(emoji = ":)"),
+                MoodData(emoji = ":D"),
             )
         }
         
