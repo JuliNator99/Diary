@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.model.MoodData
+import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.padding
 import kotlinx.datetime.LocalDate
@@ -79,9 +79,9 @@ private fun TimelinePreview() {
     ThemeLayer {
         val journals = remember {
             listOf(
-                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 0.123.days, mood = MoodData(emoji = ":D")),
-                JournalEntry(text = "What is going on with this.", mood = MoodData(emoji = ":D")),
-                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 1.123.days, mood = MoodData(emoji = ":D"))
+                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 0.123.days, mood = Mood.HIGH),
+                JournalEntry(text = "What is going on with this.", mood = Mood.HIGH),
+                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 1.123.days, mood = Mood.HIGH)
             )
         }
         

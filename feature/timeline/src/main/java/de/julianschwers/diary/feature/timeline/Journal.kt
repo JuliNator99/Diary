@@ -34,7 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.model.MoodData
+import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.card
 import de.julianschwers.diary.core.theme.elevation
@@ -150,7 +150,7 @@ private fun MainInfo(
 
 @Composable
 private fun Sidebar(
-    mood: MoodData?,
+    mood: Mood?,
     line: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -159,7 +159,7 @@ private fun Sidebar(
         modifier = modifier
     ) {
         Text(
-            text = mood?.emoji ?: "",
+            text = if (mood != null) LocalMoods.current.getEmoji(mood) else "",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.minimumInteractiveComponentSize()
         )
@@ -228,9 +228,9 @@ private fun JournalDayPreview() {
     ThemeLayer {
         val journals = remember {
             listOf(
-                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears", mood = MoodData(emoji = ":D")),
-                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears", mood = MoodData(emoji = ":D")),
-                JournalEntry(text = "What is going on with this.", mood = MoodData(emoji = ":D"))
+                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears", mood = Mood.LOW),
+                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears", mood = Mood.VERY_HIGH),
+                JournalEntry(text = "What is going on with this.", mood = Mood.HIGH)
             )
         }
         
@@ -247,7 +247,7 @@ private fun JournalDayPreview() {
 @Composable
 private fun JournalItemPreview() {
     ThemeLayer {
-        val journal = remember { JournalEntry(text = "What is going on with this.", mood = MoodData(emoji = ":D")) }
+        val journal = remember { JournalEntry(text = "What is going on with this.", mood = Mood.HIGH) }
         
         JournalItem(
             journalEntry = journal,
