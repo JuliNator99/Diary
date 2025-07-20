@@ -33,13 +33,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.julianschwers.diary.core.common.getDisplayName
 import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.card
 import de.julianschwers.diary.core.theme.elevation
 import de.julianschwers.diary.core.theme.padding
-import de.julianschwers.diary.core.common.getDisplayName
 import java.time.format.FormatStyle
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -112,6 +112,7 @@ private fun JournalItem(
                 line = addConnectingLine,
             )
             MainInfo(
+                mood = journalEntry.mood?.let { stringResource(LocalMoods.current.getName(it)) } ?: "",
                 text = journalEntry.text,
                 time = journalEntry.time,
                 onDelete = onDelete,
@@ -125,6 +126,7 @@ private fun JournalItem(
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun MainInfo(
+    mood: String,
     text: String,
     time: Instant,
     modifier: Modifier = Modifier,
@@ -136,6 +138,7 @@ private fun MainInfo(
         modifier = modifier
     ) {
         InfoBar(
+            mood = mood,
             time = time,
             onDelete = onDelete,
             onEdit = onEdit
@@ -176,6 +179,7 @@ private fun Sidebar(
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun InfoBar(
+    mood: String,
     time: Instant,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
@@ -183,7 +187,13 @@ private fun InfoBar(
 ) {
     var showDropdown by remember { mutableStateOf(false) }
     
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)) {
+        Text(
+            text = mood,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+        )
         Text(
             text = time.getDisplayName(timeStyle = FormatStyle.SHORT),
             style = MaterialTheme.typography.bodyMedium,
