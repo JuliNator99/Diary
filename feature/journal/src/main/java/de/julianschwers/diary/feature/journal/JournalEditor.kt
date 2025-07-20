@@ -37,7 +37,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,7 +48,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.model.MoodData
+import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.padding
 import de.julianschwers.diary.core.util.getDisplayName
@@ -95,7 +94,6 @@ internal fun JournalEditor(
             item {
                 MoodSelector(
                     selected = state.entry.mood,
-                    allMoods = state.allMoods,
                     onSelect = { change(state.entry.copy(mood = it)) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -226,17 +224,16 @@ private fun DateTimeSelector(
 
 @Composable
 private fun MoodSelector(
-    selected: MoodData?,
-    allMoods: List<MoodData>,
+    selected: Mood?,
     modifier: Modifier = Modifier,
-    onSelect: (MoodData?) -> Unit,
+    onSelect: (Mood?) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = modifier
     ) {
-        allMoods.forEach { mood ->
+        Mood.entries.forEach { mood ->
             SelectableMood(
                 mood = mood,
                 selected = mood == selected,
@@ -248,7 +245,7 @@ private fun MoodSelector(
 
 @Composable
 private fun SelectableMood(
-    mood: MoodData,
+    mood: Mood,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onToggleSelect: () -> Unit,
@@ -263,7 +260,7 @@ private fun SelectableMood(
         )
     ) {
         Text(
-            text = mood.emoji,
+            text = LocalMoods.current.getEmoji(mood),
             style = MaterialTheme.typography.titleMedium
         )
         RadioButton(
@@ -304,21 +301,9 @@ private fun TopAppBar(
 private fun JournalEditorPreview() {
     ThemeLayer {
         var journal by remember { mutableStateOf(JournalEntry()) }
-        val moods = remember {
-            mutableStateListOf(
-                MoodData(emoji = "):<"),
-                MoodData(emoji = "D:"),
-                MoodData(emoji = "):"),
-                MoodData(emoji = ":)"),
-                MoodData(emoji = ":D"),
-            )
-        }
         
         JournalEditor(
-            state = JournalEditorState.Editor(
-                entry = journal,
-                allMoods = moods
-            ),
+            state = JournalEditorState.Editor(entry = journal),
             onDiscard = {},
             onSave = {},
             change = { journal = it })

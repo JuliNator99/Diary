@@ -7,7 +7,7 @@ import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.data.repository.JournalRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
@@ -32,10 +32,10 @@ class JournalEditorVM(
     }
     
     
-    val state = journal.combine(repository.queryMoods()) { journal, moods ->
-        if (journal == null) return@combine JournalEditorState.Loading
+    val state = journal.map { journal ->
+        if (journal == null) return@map JournalEditorState.Loading
         
-        JournalEditorState.Editor(entry = journal, allMoods = moods)
+        JournalEditorState.Editor(entry = journal)
     }
     
     fun update(newJournal: JournalEntry) = journal.update { newJournal }
