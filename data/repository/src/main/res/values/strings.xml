@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mood_name_verylow">Terrible</string>
+    <string name="mood_name_low">Bad</string>
+    <string name="mood_name_moderate">Fine</string>
+    <string name="mood_name_high">Good</string>
+    <string name="mood_name_veryhigh">Awesome</string>
+</resources>
