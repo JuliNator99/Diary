@@ -1,16 +1,16 @@
 package de.julianschwers.diary.data.repository
 
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.model.MoodData
+import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.data.database.JournalEntryData
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-internal fun JournalEntryData.asModel(allMoods: List<MoodData>): JournalEntry =
+internal fun JournalEntryData.asModel(): JournalEntry =
     JournalEntry(
         text = text ?: "",
-        mood = allMoods.find { it.uid == this.moodUid },
+        mood = moodUid?.let { runCatching { Mood.valueOf(it) }.getOrNull() },
         time = Instant.fromEpochMilliseconds(timeMillis),
         
         created = Instant.fromEpochMilliseconds(createdMillis),
@@ -21,7 +21,7 @@ internal fun JournalEntryData.asModel(allMoods: List<MoodData>): JournalEntry =
 internal fun JournalEntry.asData(storedData: JournalEntryData): JournalEntryData =
     storedData.apply {
         this@apply.text = this@asData.text.takeUnless { it.isBlank() }
-        this@apply.moodUid = this@asData.mood?.uid
+        this@apply.moodUid = this@asData.mood?.name
         this@apply.timeMillis = this@asData.time.toEpochMilliseconds()
         
         this@apply.createdMillis = this@asData.created.toEpochMilliseconds()

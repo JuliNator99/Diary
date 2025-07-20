@@ -8,7 +8,7 @@ import kotlin.uuid.Uuid
 
 data class JournalEntry @OptIn(ExperimentalTime::class, ExperimentalUuidApi::class) constructor(
     val text: String = "",
-    val mood: MoodData? = null,
+    val mood: Mood? = null,
     val time: Instant = Clock.System.now(),
     
     val created: Instant = Clock.System.now(),
