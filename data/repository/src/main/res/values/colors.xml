@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mood_color_verylow">#D44135</color>
+    <color name="mood_color_low">#BE580C</color>
+    <color name="mood_color_moderate">#917200</color>
+    <color name="mood_color_high">#19874E</color>
+    <color name="mood_color_veryhigh">#1C78CD</color>
+</resources>

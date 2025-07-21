@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import de.julianschwers.diary.data.database.room.RoomDatabase
 import de.julianschwers.diary.data.repository.JournalRepository
+import de.julianschwers.diary.data.repository.MoodRepository
 import kotlin.time.TimeSource
 
 private const val TAG = "AppEnvironment"
@@ -19,6 +20,7 @@ class AppEnvironment(private val context: Context) {
     
     lateinit var roomDatabase: RoomDatabase
     lateinit var journalRepository: JournalRepository
+    lateinit var moodRepository: MoodRepository
     
     init {
         initialise()
@@ -53,5 +55,6 @@ class AppEnvironment(private val context: Context) {
     private fun initRoomRepos() {
         val repo = JournalRepository(database = roomDatabase)
         journalRepository = repo
+        moodRepository = MoodRepository()
     }
 }

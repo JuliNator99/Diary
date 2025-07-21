@@ -79,9 +79,9 @@ private fun TimelinePreview() {
     ThemeLayer {
         val journals = remember {
             listOf(
-                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 0.123.days, mood = Mood(emoji = ":D")),
-                JournalEntry(text = "What is going on with this.", mood = Mood(emoji = ":D")),
-                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 1.123.days, mood = Mood(emoji = ":D"))
+                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 0.123.days, mood = Mood.HIGH),
+                JournalEntry(text = "What is going on with this.", mood = Mood.HIGH),
+                JournalEntry(text = "What is going on with this.", time = Clock.System.now() - 1.123.days, mood = Mood.HIGH)
             )
         }
         

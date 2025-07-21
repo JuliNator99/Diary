@@ -16,6 +16,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,16 +31,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.julianschwers.diary.core.common.getDisplayName
 import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.card
 import de.julianschwers.diary.core.theme.elevation
 import de.julianschwers.diary.core.theme.padding
-import de.julianschwers.diary.core.util.getDisplayName
 import java.time.format.FormatStyle
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -110,10 +112,13 @@ private fun JournalItem(
             Sidebar(
                 mood = journalEntry.mood,
                 line = addConnectingLine,
+                color = journalEntry.mood?.let { colorResource(LocalMoods.current.getColor(it)) } ?: LocalContentColor.current,
             )
             MainInfo(
+                mood = journalEntry.mood?.let { stringResource(LocalMoods.current.getName(it)) } ?: "",
                 text = journalEntry.text,
                 time = journalEntry.time,
+                color = journalEntry.mood?.let { colorResource(LocalMoods.current.getColor(it)) } ?: LocalContentColor.current,
                 onDelete = onDelete,
                 onEdit = onEdit
             )
@@ -125,8 +130,10 @@ private fun JournalItem(
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun MainInfo(
+    mood: String,
     text: String,
     time: Instant,
+    color: Color,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
     onEdit: () -> Unit,
@@ -136,7 +143,9 @@ private fun MainInfo(
         modifier = modifier
     ) {
         InfoBar(
+            mood = mood,
             time = time,
+            color=color,
             onDelete = onDelete,
             onEdit = onEdit
         )
@@ -152,6 +161,7 @@ private fun MainInfo(
 private fun Sidebar(
     mood: Mood?,
     line: Boolean,
+    color: Color,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -159,8 +169,9 @@ private fun Sidebar(
         modifier = modifier
     ) {
         Text(
-            text = mood?.emoji ?: "",
+            text = if (mood != null) LocalMoods.current.getEmoji(mood) else "",
             style = MaterialTheme.typography.titleLarge,
+            color = color,
             modifier = Modifier.minimumInteractiveComponentSize()
         )
         if (line) {
@@ -176,14 +187,25 @@ private fun Sidebar(
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun InfoBar(
+    mood: String,
     time: Instant,
+    color: Color,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
     onEdit: () -> Unit,
 ) {
     var showDropdown by remember { mutableStateOf(false) }
     
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)
+    ) {
+        Text(
+            text = mood,
+            style = MaterialTheme.typography.titleLarge,
+            color = color,
+            modifier = Modifier
+        )
         Text(
             text = time.getDisplayName(timeStyle = FormatStyle.SHORT),
             style = MaterialTheme.typography.bodyMedium,
@@ -228,9 +250,9 @@ private fun JournalDayPreview() {
     ThemeLayer {
         val journals = remember {
             listOf(
-                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears", mood = Mood(emoji = ":D")),
-                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears", mood = Mood(emoji = ":D")),
-                JournalEntry(text = "What is going on with this.", mood = Mood(emoji = ":D"))
+                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears", mood = Mood.LOW),
+                JournalEntry(text = "What is going on with this. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears. May If I make this longer some day it appears", mood = Mood.VERY_HIGH),
+                JournalEntry(text = "What is going on with this.", mood = Mood.HIGH)
             )
         }
         
@@ -247,7 +269,7 @@ private fun JournalDayPreview() {
 @Composable
 private fun JournalItemPreview() {
     ThemeLayer {
-        val journal = remember { JournalEntry(text = "What is going on with this.", mood = Mood(emoji = ":D")) }
+        val journal = remember { JournalEntry(text = "What is going on with this.", mood = Mood.HIGH) }
         
         JournalItem(
             journalEntry = journal,

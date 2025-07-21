@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "de.julianschwers.diary.core.util"
+    namespace = "de.julianschwers.diary.core.common"
     compileSdk = 36
     
     defaultConfig {

@@ -1,5 +1,6 @@
 package de.julianschwers.diary.feature.journal
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -37,7 +38,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,13 +46,14 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import de.julianschwers.diary.core.common.getDisplayName
 import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.padding
-import de.julianschwers.diary.core.util.getDisplayName
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atDate
@@ -72,38 +73,41 @@ internal fun JournalEditor(
     onSave: () -> Unit,
     change: (JournalEntry) -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                onDiscard = onDiscard,
-                onSave = onSave,
-            )
-        },
-        modifier = Modifier.imePadding()
-    ) { innerPadding ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.large),
-            contentPadding = PaddingValues(MaterialTheme.padding.large),
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            item {
-                DateTimeSelector(
-                    time = state.entry.time,
-                    onSelect = { change(state.entry.copy(time = it)) },
+    val moodColor by animateColorAsState(state.entry.mood?.let { colorResource(LocalMoods.current.getColor(it)) } ?: MaterialTheme.colorScheme.primary)
+    
+    MaterialTheme(colorScheme = MaterialTheme.colorScheme.copy(primary = moodColor)) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    onDiscard = onDiscard,
+                    onSave = onSave,
                 )
-            }
-            item {
-                MoodSelector(
-                    selected = state.entry.mood,
-                    allMoods = state.allMoods,
-                    onSelect = { change(state.entry.copy(mood = it)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item {
-                TextField(
-                    text = state.entry.text,
-                    onTextChange = { change(state.entry.copy(text = it)) })
+            },
+            modifier = Modifier.imePadding()
+        ) { innerPadding ->
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.large),
+                contentPadding = PaddingValues(MaterialTheme.padding.large),
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                item {
+                    DateTimeSelector(
+                        time = state.entry.time,
+                        onSelect = { change(state.entry.copy(time = it)) },
+                    )
+                }
+                item {
+                    MoodSelector(
+                        selected = state.entry.mood,
+                        onSelect = { change(state.entry.copy(mood = it)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                item {
+                    TextField(
+                        text = state.entry.text,
+                        onTextChange = { change(state.entry.copy(text = it)) })
+                }
             }
         }
     }
@@ -227,7 +231,6 @@ private fun DateTimeSelector(
 @Composable
 private fun MoodSelector(
     selected: Mood?,
-    allMoods: List<Mood>,
     modifier: Modifier = Modifier,
     onSelect: (Mood?) -> Unit,
 ) {
@@ -236,7 +239,7 @@ private fun MoodSelector(
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = modifier
     ) {
-        allMoods.forEach { mood ->
+        Mood.entries.forEach { mood ->
             SelectableMood(
                 mood = mood,
                 selected = mood == selected,
@@ -263,7 +266,7 @@ private fun SelectableMood(
         )
     ) {
         Text(
-            text = mood.emoji,
+            text = LocalMoods.current.getEmoji(mood),
             style = MaterialTheme.typography.titleMedium
         )
         RadioButton(
@@ -304,21 +307,9 @@ private fun TopAppBar(
 private fun JournalEditorPreview() {
     ThemeLayer {
         var journal by remember { mutableStateOf(JournalEntry()) }
-        val moods = remember {
-            mutableStateListOf(
-                Mood(emoji = "):<"),
-                Mood(emoji = "D:"),
-                Mood(emoji = "):"),
-                Mood(emoji = ":)"),
-                Mood(emoji = ":D"),
-            )
-        }
         
         JournalEditor(
-            state = JournalEditorState.Editor(
-                entry = journal,
-                allMoods = moods
-            ),
+            state = JournalEditorState.Editor(entry = journal),
             onDiscard = {},
             onSave = {},
             change = { journal = it })

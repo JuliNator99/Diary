@@ -35,7 +35,7 @@ android {
 dependencies {
     implementation(project(":core:theme"))
     implementation(project(":core:model"))
-    implementation(project(":core:util"))
+    implementation(project(":core:common"))
     implementation(project(":data:repository"))
     
     implementation(libs.androidx.icons)

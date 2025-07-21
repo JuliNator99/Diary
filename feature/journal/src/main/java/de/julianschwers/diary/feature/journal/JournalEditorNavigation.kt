@@ -9,7 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import de.julianschwers.diary.core.model.JournalEntry
-import de.julianschwers.diary.core.util.NavigationArgumentRegister
+import de.julianschwers.diary.core.common.NavigationArgumentRegister
 import de.julianschwers.diary.data.repository.JournalRepository
 
 internal val navArgRegister = NavigationArgumentRegister<JournalEntry>()

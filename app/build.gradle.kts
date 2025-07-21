@@ -23,6 +23,10 @@ android {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        getByName("debug") {
+            versionNameSuffix = "-DEBUG"
+            applicationIdSuffix = ".debug"
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -39,7 +43,7 @@ android {
 dependencies {
     implementation(project(":core:theme"))
     implementation(project(":core:model"))
-    implementation(project(":core:util"))
+    implementation(project(":core:common"))
     implementation(project(":data:database"))
     implementation(project(":data:repository"))
     implementation(project(":feature:timeline"))
