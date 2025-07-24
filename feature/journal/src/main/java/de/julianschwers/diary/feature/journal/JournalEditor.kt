@@ -54,6 +54,7 @@ import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.core.model.Mood
 import de.julianschwers.diary.core.theme.ThemeLayer
 import de.julianschwers.diary.core.theme.padding
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atDate
@@ -131,7 +132,11 @@ private fun TextField(
         Surface(shape = MaterialTheme.shapes.medium) {
             val state = rememberTextFieldState(initialText = text)
             
-            LaunchedEffect(Unit) { snapshotFlow { state.text }.collect { onTextChange(it.toString()) } }
+            LaunchedEffect(state, onTextChange) {
+                snapshotFlow { state.text }
+                    .distinctUntilChanged()
+                    .collect { onTextChange(it.toString()) }
+            }
             
             val style = MaterialTheme.typography.bodyLarge
             BasicTextField(
