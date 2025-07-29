@@ -13,6 +13,7 @@ data class RoomJournalEntry @OptIn(ExperimentalTime::class, ExperimentalUuidApi:
     override var text: String? = null,
     override var moodUid: String? = null,
     override var timeMillis: Long = Clock.System.now().toEpochMilliseconds(),
+    override var attachmentsList: String? = null,
     
     override var createdMillis: Long = Clock.System.now().toEpochMilliseconds(),
     @PrimaryKey override var uid: String = Uuid.random().toString(),
