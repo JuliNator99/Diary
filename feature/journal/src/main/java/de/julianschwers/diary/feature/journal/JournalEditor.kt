@@ -1,5 +1,8 @@
 package de.julianschwers.diary.feature.journal
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,11 +18,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AttachFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +51,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,6 +68,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import java.io.InputStream
 import java.time.format.FormatStyle
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -72,6 +79,7 @@ internal fun JournalEditor(
     state: JournalEditorState.Editor,
     onDiscard: () -> Unit,
     onSave: () -> Unit,
+    attach: (List<InputStream>) -> Unit,
     change: (JournalEntry) -> Unit,
 ) {
     val moodColor by animateColorAsState(state.entry.mood?.let { colorResource(LocalMoods.current.getColor(it)) } ?: MaterialTheme.colorScheme.primary)
@@ -84,6 +92,7 @@ internal fun JournalEditor(
                     onSave = onSave,
                 )
             },
+            bottomBar = { BottomAppBar(onAttach = attach) },
             modifier = Modifier.imePadding()
         ) { innerPadding ->
             LazyColumn(
@@ -305,6 +314,22 @@ private fun TopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BottomAppBar(
+    onAttach: (List<InputStream>) -> Unit,
+) {
+    val context = LocalContext.current
+    val mediaPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
+        val inputStreams = uris.map { context.contentResolver.openInputStream(it)!! }
+        onAttach(inputStreams)
+    }
+    
+    BottomAppBar {
+        IconButton(onClick = { mediaPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)) }) { Icon(imageVector = Icons.Outlined.AttachFile, contentDescription = null) }
+    }
+}
+
 
 @OptIn(ExperimentalTime::class)
 @Preview
@@ -317,6 +342,7 @@ private fun JournalEditorPreview() {
             state = JournalEditorState.Editor(entry = journal),
             onDiscard = {},
             onSave = {},
+            attach = {},
             change = { journal = it })
     }
 }

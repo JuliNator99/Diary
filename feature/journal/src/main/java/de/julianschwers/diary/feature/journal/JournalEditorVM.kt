@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.InputStream
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -46,5 +47,26 @@ class JournalEditorVM(
             repository.upsert(journalEntry)
             viewModelScope.launch(Dispatchers.Main) { callback() }
         }
+    }
+    
+    fun attach(items: List<InputStream>) {
+        val names = mutableListOf<String>()
+        for (item in items) {
+            val reader = item.bufferedReader()
+            val name = repository.saveAttachment(reader)
+            names.add(name)
+        }
+        
+        val currentJournal = journal.value ?: return
+        val attachments = currentJournal.attachments
+        
+        update(
+            currentJournal.copy(
+                attachments = buildList {
+                    addAll(attachments)
+                    addAll(names)
+                }
+            )
+        )
     }
 }
