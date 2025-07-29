@@ -2,6 +2,7 @@ package de.julianschwers.diary.data.database.directory
 
 import de.julianschwers.diary.data.database.AttachmentsDatabase
 import java.io.File
+import java.io.InputStream
 import java.io.Reader
 
 class DirectoryAttachmentsDatabase(private val directory: File) : AttachmentsDatabase {
@@ -14,9 +15,9 @@ class DirectoryAttachmentsDatabase(private val directory: File) : AttachmentsDat
     private fun getFile(name: String): File = File(directory, name)
     override fun exists(name: String): Boolean = getFile(name).exists()
     
-    override fun read(name: String): Reader {
+    override fun read(name: String): InputStream {
         val file = getFile(name)
-        return file.bufferedReader()
+        return file.inputStream()
     }
     
     override fun write(name: String, data: Reader) {

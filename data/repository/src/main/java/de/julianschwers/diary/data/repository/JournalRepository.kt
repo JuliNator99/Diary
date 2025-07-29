@@ -7,6 +7,7 @@ import de.julianschwers.diary.data.database.JournalEntryDataImpl
 import de.julianschwers.diary.data.database.copyImpl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.InputStream
 import java.io.Reader
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -29,5 +30,5 @@ class JournalRepository(
         return name
     }
     
-    fun getAttachments(journal: JournalEntry): List<Reader> = journal.attachments.mapNotNull { if (attachments.exists(it)) attachments.read(it) else null }
+    fun getAttachments(journal: JournalEntry): List<InputStream> = journal.attachments.mapNotNull { if (attachments.exists(it)) attachments.read(it) else null }
 }
