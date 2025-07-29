@@ -43,7 +43,11 @@ class JournalEditorVM(
         val journalEntry = journal.value ?: throw NullPointerException("Cannot save while no JournalEntry is loaded.")
         
         viewModelScope.launch(Dispatchers.IO) {
-            repository.upsert(journalEntry)
+            repository.upsert(
+                journalEntry.copy(
+                    text = journalEntry.text.trim(),
+                )
+            )
             viewModelScope.launch(Dispatchers.Main) { callback() }
         }
     }
