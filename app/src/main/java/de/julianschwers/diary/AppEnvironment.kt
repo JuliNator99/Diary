@@ -71,7 +71,7 @@ class AppEnvironment(private val context: Context) {
     }
     
     private fun initRoomRepos() {
-        val repo = JournalRepository(database = roomDatabase)
+        val repo = JournalRepository(database = roomDatabase, attachments = attachmentsDatabase)
         journalRepository = repo
         moodRepository = MoodRepository()
     }
