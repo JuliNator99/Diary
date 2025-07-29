@@ -65,8 +65,6 @@ class AppEnvironment(private val context: Context) {
         
         attachmentsDatabase = database
         
-        initRoomRepos()
-        
         Log.i(TAG, "Attachments successfully initialised in ${start.elapsedNow()}!")
     }
     
