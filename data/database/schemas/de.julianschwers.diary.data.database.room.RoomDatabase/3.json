@@ -1,0 +1,58 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "42bd53d93e53377727d0ee337f45ba78",
+    "entities": [
+      {
+        "tableName": "RoomJournalEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`text` TEXT, `moodUid` TEXT, `timeMillis` INTEGER NOT NULL, `attachmentsList` TEXT, `createdMillis` INTEGER NOT NULL, `uid` TEXT NOT NULL, PRIMARY KEY(`uid`))",
+        "fields": [
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "moodUid",
+            "columnName": "moodUid",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timeMillis",
+            "columnName": "timeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attachmentsList",
+            "columnName": "attachmentsList",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdMillis",
+            "columnName": "createdMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "uid"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '42bd53d93e53377727d0ee337f45ba78')"
+    ]
+  }
+}

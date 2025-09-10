@@ -11,6 +11,8 @@ data class JournalEntry @OptIn(ExperimentalTime::class, ExperimentalUuidApi::cla
     val mood: Mood? = null,
     val time: Instant = Clock.System.now(),
     
+    val attachments: List<String> = emptyList(),
+    
     val created: Instant = Clock.System.now(),
     val uid: String = Uuid.random().toString(),
 )

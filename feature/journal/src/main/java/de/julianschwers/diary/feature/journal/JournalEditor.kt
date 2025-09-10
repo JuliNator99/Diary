@@ -1,5 +1,8 @@
 package de.julianschwers.diary.feature.journal
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,15 +14,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AttachFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +47,7 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,9 +57,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.size.Precision
 import de.julianschwers.diary.core.common.getDisplayName
 import de.julianschwers.diary.core.model.JournalEntry
 import de.julianschwers.diary.core.model.Mood
@@ -64,6 +81,8 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import java.io.File
+import java.io.InputStream
 import java.time.format.FormatStyle
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -74,6 +93,7 @@ internal fun JournalEditor(
     state: JournalEditorState.Editor,
     onDiscard: () -> Unit,
     onSave: () -> Unit,
+    attach: (List<InputStream>) -> Unit,
     change: (JournalEntry) -> Unit,
 ) {
     val moodColor by animateColorAsState(state.entry.mood?.let { colorResource(LocalMoods.current.getColor(it)) } ?: MaterialTheme.colorScheme.primary)
@@ -86,6 +106,7 @@ internal fun JournalEditor(
                     onSave = onSave,
                 )
             },
+            bottomBar = { BottomAppBar(onAttach = attach) },
             modifier = Modifier.imePadding()
         ) { innerPadding ->
             LazyColumn(
@@ -111,11 +132,52 @@ internal fun JournalEditor(
                         text = state.entry.text,
                         onTextChange = { change(state.entry.copy(text = it)) })
                 }
+                item {
+                    AttachmentsRow(attachments = state.attachments)
+                }
             }
         }
     }
 }
 
+
+@Composable
+private fun AttachmentsRow(
+    attachments: List<File>,
+    modifier: Modifier = Modifier,
+) = with(LocalDensity.current) {
+    val context = LocalContext.current
+    var size by remember { mutableIntStateOf(0) }
+    val padding = MaterialTheme.padding.medium
+    
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(padding),
+        modifier = Modifier
+            .onSizeChanged { size = it.width }
+            .fillMaxWidth()
+    ) {
+        items(items = attachments) { attachment ->
+            val images = attachments.size
+            val scaleSizeTo = if (images <= 3) size.toDp() else size.toDp() * 0.9f // Scale images down, so the user sees there are more
+            val fullSizePerImage = scaleSizeTo / images.coerceAtLeast(2).coerceAtMost(3)
+            val paddingPerImage = padding * (images - 1) / images
+            
+            AsyncImage(
+                model = ImageRequest
+                    .Builder(context)
+                    .data(attachment)
+                    .precision(Precision.EXACT)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(fullSizePerImage - paddingPerImage)
+                    .clip(MaterialTheme.shapes.large)
+            )
+        }
+    }
+}
 
 @Composable
 private fun TextField(
@@ -308,6 +370,22 @@ private fun TopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BottomAppBar(
+    onAttach: (List<InputStream>) -> Unit,
+) {
+    val context = LocalContext.current
+    val mediaPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
+        val inputStreams = uris.map { context.contentResolver.openInputStream(it)!! }
+        onAttach(inputStreams)
+    }
+    
+    BottomAppBar {
+        IconButton(onClick = { mediaPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }) { Icon(imageVector = Icons.Outlined.AttachFile, contentDescription = null) }
+    }
+}
+
 
 @OptIn(ExperimentalTime::class)
 @Preview
@@ -320,6 +398,7 @@ private fun JournalEditorPreview() {
             state = JournalEditorState.Editor(entry = journal),
             onDiscard = {},
             onSave = {},
+            attach = {},
             change = { journal = it })
     }
 }
