@@ -379,7 +379,7 @@ private fun BottomAppBar(
     }
     
     BottomAppBar {
-        IconButton(onClick = { mediaPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)) }) { Icon(imageVector = Icons.Outlined.AttachFile, contentDescription = null) }
+        IconButton(onClick = { mediaPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }) { Icon(imageVector = Icons.Outlined.AttachFile, contentDescription = null) }
     }
 }
 
