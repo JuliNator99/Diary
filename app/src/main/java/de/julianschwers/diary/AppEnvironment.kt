@@ -5,9 +5,12 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import de.julianschwers.diary.data.database.AttachmentsDatabase
+import de.julianschwers.diary.data.database.directory.DirectoryAttachmentsDatabase
 import de.julianschwers.diary.data.database.room.RoomDatabase
 import de.julianschwers.diary.data.repository.JournalRepository
 import de.julianschwers.diary.data.repository.MoodRepository
+import java.io.File
 import kotlin.time.TimeSource
 
 private const val TAG = "AppEnvironment"
@@ -19,6 +22,7 @@ class AppEnvironment(private val context: Context) {
         private set
     
     lateinit var roomDatabase: RoomDatabase
+    lateinit var attachmentsDatabase: AttachmentsDatabase
     lateinit var journalRepository: JournalRepository
     lateinit var moodRepository: MoodRepository
     
@@ -32,6 +36,7 @@ class AppEnvironment(private val context: Context) {
         Log.i(TAG, "Initialising App Environment...")
         val start = TimeSource.Monotonic.markNow()
         
+        initAttachments()
         initRoom()
         
         Log.i(TAG, "App Environment successfully initialised in ${start.elapsedNow()}!")
@@ -52,8 +57,19 @@ class AppEnvironment(private val context: Context) {
         Log.i(TAG, "Room Database successfully initialised in ${start.elapsedNow()}!")
     }
     
+    private fun initAttachments() {
+        Log.i(TAG, "Initialising Attachments...")
+        val start = TimeSource.Monotonic.markNow()
+        
+        val database = DirectoryAttachmentsDatabase(directory = File(context.dataDir, "attachments"))
+        
+        attachmentsDatabase = database
+        
+        Log.i(TAG, "Attachments successfully initialised in ${start.elapsedNow()}!")
+    }
+    
     private fun initRoomRepos() {
-        val repo = JournalRepository(database = roomDatabase)
+        val repo = JournalRepository(database = roomDatabase, attachments = attachmentsDatabase)
         journalRepository = repo
         moodRepository = MoodRepository()
     }

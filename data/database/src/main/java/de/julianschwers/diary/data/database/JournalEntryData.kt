@@ -10,6 +10,7 @@ interface JournalEntryData {
     var text: String?
     var moodUid: String?
     var timeMillis: Long
+    var attachmentsList: String?
     
     var createdMillis: Long
     var uid: String
@@ -28,6 +29,7 @@ data class JournalEntryDataImpl @OptIn(ExperimentalTime::class, ExperimentalUuid
     override var text: String? = null,
     override var moodUid: String? = null,
     override var timeMillis: Long = Clock.System.now().toEpochMilliseconds(),
+    override var attachmentsList: String? = null,
     
     override var createdMillis: Long = Clock.System.now().toEpochMilliseconds(),
     override var uid: String = Uuid.random().toString(),
@@ -39,6 +41,7 @@ fun <T : JournalEntryData> JournalEntryData.copy(destination: T): T = destinatio
     this@apply.text = this@copy.text
     this@apply.moodUid = this@copy.moodUid
     this@apply.timeMillis = this@copy.timeMillis
+    this@apply.attachmentsList = this@copy.attachmentsList
     
     this@apply.createdMillis = this@copy.createdMillis
     this@apply.uid = this@copy.uid

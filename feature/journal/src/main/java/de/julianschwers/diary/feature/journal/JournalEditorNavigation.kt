@@ -49,6 +49,7 @@ fun NavGraphBuilder.journalEditor(
             state = state,
             onDiscard = navBack,
             onSave = { vm.save { navBack() } },
+            attach = vm::attach,
             change = vm::update
         )
     }

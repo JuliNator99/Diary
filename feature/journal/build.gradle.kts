@@ -38,6 +38,8 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":data:repository"))
     
+    
+    implementation(libs.coil.compose)
     implementation(libs.androidx.icons)
     implementation(libs.androidx.material3.navigation)
     
