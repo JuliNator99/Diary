@@ -283,7 +283,7 @@ private fun DateTimeSelector(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)
             ) {
                 Icon(imageVector = Icons.Rounded.DateRange, contentDescription = null)
-                Text(text = time.getDisplayName(dateStyle = FormatStyle.FULL))
+                Text(text = time.getDisplayName(dateStyle = FormatStyle.LONG))
             }
         }
         TextButton(onClick = { showTimePicker = true }) {
