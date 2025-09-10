@@ -3,7 +3,6 @@ package de.julianschwers.diary.data.database.directory
 import de.julianschwers.diary.data.database.AttachmentsDatabase
 import java.io.File
 import java.io.InputStream
-import java.io.Reader
 
 class DirectoryAttachmentsDatabase(private val directory: File) : AttachmentsDatabase {
     init {
@@ -15,15 +14,14 @@ class DirectoryAttachmentsDatabase(private val directory: File) : AttachmentsDat
     private fun getFile(name: String): File = File(directory, name)
     override fun exists(name: String): Boolean = getFile(name).exists()
     
-    override fun read(name: String): InputStream {
+    override fun read(name: String): File {
         val file = getFile(name)
-        return file.inputStream()
+        if (!file.exists()) throw IllegalArgumentException("Failed to find an attachment named $name.")
+        return file
     }
     
-    override fun write(name: String, data: Reader) {
+    override fun write(name: String, data: InputStream) {
         val file = getFile(name)
-        val writer = file.bufferedWriter()
-        
-        while (data.ready()) writer.write(data.read())
+        file.writeBytes(data.readBytes())
     }
 }

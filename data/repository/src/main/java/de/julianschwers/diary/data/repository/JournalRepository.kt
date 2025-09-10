@@ -7,6 +7,7 @@ import de.julianschwers.diary.data.database.JournalEntryDataImpl
 import de.julianschwers.diary.data.database.copyImpl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.File
 import java.io.InputStream
 import java.io.Reader
 import kotlin.uuid.ExperimentalUuidApi
@@ -23,12 +24,12 @@ class JournalRepository(
     suspend fun delete(journal: JournalEntry) = database.journalEntryDao.delete(journal = journal.asData(database.journalEntryDao.getJournal(uid = journal.uid)?.copyImpl() ?: JournalEntryDataImpl()))
     
     @OptIn(ExperimentalUuidApi::class)
-    fun saveAttachment(attachment: Reader): String {
+    fun saveAttachment(attachment: InputStream): String {
         val name = Uuid.random().toString()
         attachments.write(name = name, data = attachment)
         
         return name
     }
     
-    fun getAttachments(journal: JournalEntry): List<InputStream> = journal.attachments.mapNotNull { if (attachments.exists(it)) attachments.read(it) else null }
+    fun getAttachments(journal: JournalEntry): List<File> = journal.attachments.mapNotNull { if (attachments.exists(it)) attachments.read(it) else null }
 }

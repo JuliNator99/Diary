@@ -55,9 +55,10 @@ class JournalEditorVM(
     fun attach(items: List<InputStream>) {
         val names = mutableListOf<String>()
         for (item in items) {
-            val reader = item.bufferedReader()
-            val name = repository.saveAttachment(reader)
-            names.add(name)
+            item.use { input ->
+                val name = repository.saveAttachment(input)
+                names.add(name)
+            }
         }
         
         val currentJournal = journal.value ?: return
