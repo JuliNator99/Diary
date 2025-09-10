@@ -36,7 +36,10 @@ class JournalEditorVM(
     val state = journal.map { journal ->
         if (journal == null) return@map JournalEditorState.Loading
         
-        JournalEditorState.Editor(entry = journal)
+        JournalEditorState.Editor(
+            entry = journal,
+            attachments = repository.getAttachments(journal)
+        )
     }
     
     fun update(newJournal: JournalEntry) = journal.update { newJournal }
